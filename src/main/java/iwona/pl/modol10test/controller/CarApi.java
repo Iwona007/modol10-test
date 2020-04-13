@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,7 +36,7 @@ public class CarApi {
     public ResponseEntity<Car> getById(@PathVariable @NotNull Long carId) {   //
         Optional<Car> findCar = carServiceInter.carById(carId);
         if (findCar.isPresent()) {
-           findCar.get();
+            findCar.get();
             return new ResponseEntity<>(findCar.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,9 +48,9 @@ public class CarApi {
         if (!findColor.isEmpty()) {
             return new ResponseEntity(findColor, HttpStatus.OK);
         }
-        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/new")
     public ResponseEntity<Car> addCar(@Valid @RequestBody Car car) {
         if (carServiceInter.save(car)) {
@@ -80,13 +81,12 @@ public class CarApi {
 
 
     @PatchMapping("/{id}/mark/{newMark}")
-    public ResponseEntity<Car> updateMark(@PathVariable Long id, @PathVariable String newMark) {
+    public ResponseEntity<Car> updateMark(@PathVariable Long id, @PathVariable @NotNull String newMark) {
         boolean changedMark = carServiceInter.changeMark(id, newMark);
         if (changedMark) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>( HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 

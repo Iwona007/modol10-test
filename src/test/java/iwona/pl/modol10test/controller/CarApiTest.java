@@ -58,13 +58,25 @@ class CarApiTest {
                 .andExpect(content().string(containsString("Car with given id: 4 not exist")));
     }
 
-//    @Test
-//    void getByColor() throws Exception {
-//        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/cars/color/{color}", Color.RED)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(status());
-//    }
+    @Test
+    void should_get_By_Color_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/cars/color/{color}", Color.RED)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
+    }
+
+    @Test
+    void should_not_get_By_Color_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/cars/color/{color}", Color.BLUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
 
     @Test
     void should_add_new_Car_test() throws Exception {
@@ -143,11 +155,43 @@ class CarApiTest {
     }
 
     @Test
-    void updateColor() {
+    void should_update_Color_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{carId}/color/{newColor}", 1, Color.SILVER)
+               .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void updateMark() {
+    void should_not_update_Color_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{carId}/color/{newColor}", 10L, Color.SILVER)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_update_Mark_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 1, "BMW")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_not_update_Mark_wrong_id_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 10L, "BMW")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_not_update_Mark_empty_mark_parameter_test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 1L, "")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
