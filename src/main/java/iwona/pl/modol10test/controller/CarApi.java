@@ -32,34 +32,42 @@ public class CarApi {
     }
 
     @GetMapping("/{carId}")
-    public Optional<Car> getById(@PathVariable @NotNull Long carId) {   //
+    public ResponseEntity<Car> getById(@PathVariable @NotNull Long carId) {   //
         Optional<Car> findCar = carServiceInter.carById(carId);
-        return findCar;
+        if (findCar.isPresent()) {
+           findCar.get();
+            return new ResponseEntity<>(findCar.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/color/{color}")
-    public List<Car> getByColor(@PathVariable @NotNull String color) { // zamieniam liste na na Resources
+    public ResponseEntity<Car> getByColor(@PathVariable @NotNull String color) { // zamieniam liste na na Resources
         List<Car> findColor = carServiceInter.carByColor(color);
-        return findColor;
+        if (!findColor.isEmpty()) {
+            return new ResponseEntity(findColor, HttpStatus.OK);
+        }
+        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    
     @PostMapping("/new")
     public ResponseEntity<Car> addCar(@Valid @RequestBody Car car) {
         if (carServiceInter.save(car)) {
-            return new ResponseEntity(true, HttpStatus.CREATED);
+            return new ResponseEntity<>(car, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-//    @PutMapping("/modify/{id}")
-//    public Car modifyCar(@PathVariable Long id, @Valid @RequestBody Car modifyCar) {
-//
-//        if (carServiceInter.changeCar(id, modifyCar)) {
-//            return carServiceInter.changeCar(id, modifyCar);
-//
-//        } else if (!carServiceInter.changeCar(id, modifyCar)) {
-//
-//        }
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<Car> modifyCar(@PathVariable Long id, @Valid @RequestBody Car modifyCar) {
+        boolean changeCar = carServiceInter.changeCar(id, modifyCar);
+        if (changeCar) {
+            return new ResponseEntity<>(modifyCar, HttpStatus.CREATED);
+        } else if (!carServiceInter.changeCar(id, modifyCar)) {
+            return new ResponseEntity<>(modifyCar, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(modifyCar, HttpStatus.BAD_REQUEST);
+    }
 
     @PatchMapping("/{carId}/color/{newColor}")
     public ResponseEntity<Car> updateColor(@PathVariable Long carId, @PathVariable @NotNull String newColor) {
@@ -86,7 +94,7 @@ public class CarApi {
     public ResponseEntity<Car> deleteById(@PathVariable @NotNull Long id) {
         boolean remove = carServiceInter.removeById(id);
         if (remove) {
-            return new ResponseEntity(true, HttpStatus.OK);
+            return new ResponseEntity(true, HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
