@@ -89,7 +89,6 @@ public class CarApi {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Car> deleteById(@PathVariable @NotNull Long id) {
         boolean remove = carServiceInter.removeById(id);
