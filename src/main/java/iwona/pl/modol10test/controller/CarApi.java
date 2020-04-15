@@ -46,7 +46,7 @@ public class CarApi {
     public ResponseEntity<Car> getByColor(@PathVariable @NotNull String color) { // zamieniam liste na na Resources
         List<Car> findColor = carServiceInter.carByColor(color);
         if (!findColor.isEmpty()) {
-            return new ResponseEntity(findColor, HttpStatus.OK);
+            return new ResponseEntity<>( HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -74,7 +74,7 @@ public class CarApi {
     public ResponseEntity<Car> updateColor(@PathVariable Long carId, @PathVariable @NotNull String newColor) {
         boolean changeColor = carServiceInter.changeColor(carId, convertColor.convertToEnum(newColor));
         if (changeColor) {
-            return new ResponseEntity(true, HttpStatus.CREATED);
+            return new ResponseEntity<>( HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
