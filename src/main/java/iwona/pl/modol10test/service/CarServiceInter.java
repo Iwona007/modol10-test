@@ -18,7 +18,7 @@ public interface CarServiceInter {
 
     boolean save(Car car);
 
-    boolean changeCar(Long carId, Car changedCar);
+    Optional<Car> changeCar(Long carId, Car changedCar);
 
     boolean changeColor(Long carId, Color color);
 

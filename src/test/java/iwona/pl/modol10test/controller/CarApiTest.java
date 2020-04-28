@@ -143,7 +143,7 @@ class CarApiTest {
                 .content(asJsonString(new Car(car.getCarId(), "Toyota", "Rav4", Color.SILVER)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.carId").value(car.getCarId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.mark").value("Toyota"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.model").value("Rav4"))
@@ -173,7 +173,7 @@ class CarApiTest {
         this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{carId}/color/{newColor}", car.getCarId(), Color.SILVER)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value("SILVER"))
                 .andReturn();
 
@@ -212,7 +212,7 @@ class CarApiTest {
     }
 
     @Test
-    @DirtiesContext
+        @DirtiesContext
     void should_not_update_Mark_empty_mark_parameter_test() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 1L, "")
                 .contentType(MediaType.APPLICATION_JSON)
