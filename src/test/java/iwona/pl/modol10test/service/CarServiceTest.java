@@ -52,7 +52,7 @@ class CarServiceTest {
         given(carServiceInter.getAll()).willReturn(carsList);
 //        when:
         List<Car> car = carServiceInter.getAll();
-        //        then:
+//       then:
         assertThat(car, Matchers.hasSize(3));
     }
 
@@ -96,7 +96,7 @@ class CarServiceTest {
 //        given
         Car newCar = new Car(2L, "Audi", "C5", Color.SILVER);
 //when
-        Optional<Car> findCar = prepareMockData().stream().filter(car -> car.getCarId() == 2l).findFirst();
+        Optional<Car> findCar = prepareMockData().stream().filter(car -> car.getCarId().equals(newCar.getCarId())).findFirst();
        findCar.map(car -> {
             car.setMark(newCar.getMark());
             car.setModel(newCar.getModel());

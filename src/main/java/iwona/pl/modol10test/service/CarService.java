@@ -34,7 +34,7 @@ public class CarService implements CarServiceInter {
 
     @Override  //get
     public Optional<Car> carById(Long carId) {
-        Optional<Car> findCarById = cars.stream().filter(car -> car.getCarId() == carId).findFirst();
+        Optional<Car> findCarById = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         findCarById.orElseThrow(() -> new CarNotExist(carId));
         return findCarById;
     }
@@ -52,7 +52,7 @@ public class CarService implements CarServiceInter {
 
     @Override //put
     public Optional<Car> changeCar(Long carId, Car changedCar) {
-        Optional<Car> findCar = Optional.ofNullable(cars.stream().filter(car -> car.getCarId() == changedCar.getCarId()).findFirst()
+        Optional<Car> findCar = Optional.ofNullable(cars.stream().filter(car -> car.getCarId().equals(changedCar.getCarId())).findFirst()
                 .orElseThrow(() -> new CarNotExist(carId)));
 
         return findCar.map(car -> {
@@ -65,7 +65,7 @@ public class CarService implements CarServiceInter {
 
     @Override //    patch
     public boolean changeColor(Long carId, Color color) {
-        Optional<Car> first = cars.stream().filter(car -> car.getCarId() == carId).findFirst();
+        Optional<Car> first = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         if (first.isPresent()) {
             Car carColor = first.get();
             carColor.setColor(color);
@@ -76,7 +76,7 @@ public class CarService implements CarServiceInter {
 
     @Override
     public boolean changeMark(Long id, String newMark) {
-        Optional<Car> findMark = cars.stream().filter(car -> car.getCarId() == id).findFirst();
+        Optional<Car> findMark = cars.stream().filter(car -> car.getCarId().equals(id)).findFirst();
         if (findMark.isPresent()) {
             Car carModel = findMark.get();
             carModel.setMark(newMark);
@@ -87,7 +87,7 @@ public class CarService implements CarServiceInter {
 
     @Override //delete
     public boolean removeById(Long carId) {
-        Optional<Car> first = cars.stream().filter(car -> car.getCarId() == carId).findFirst();
+        Optional<Car> first = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         if (first.isPresent()) {
             cars.remove(first.get());
             return true;
