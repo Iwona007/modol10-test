@@ -97,12 +97,12 @@ class CarServiceTest {
         Car newCar = new Car(2L, "Audi", "C5", Color.SILVER);
 //when
         Optional<Car> findCar = prepareMockData().stream().filter(car -> car.getCarId() == 2l).findFirst();
-        if (findCar.isPresent()) {
-            Car car = findCar.get();
+       findCar.map(car -> {
             car.setMark(newCar.getMark());
             car.setModel(newCar.getModel());
             car.setColor(newCar.getColor());
-        }
+            return car;
+        });
 
         carServiceInter.changeCar(findCar.get().getCarId(), newCar);
 //        then

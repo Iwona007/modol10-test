@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,9 +17,6 @@ public class CarService implements CarServiceInter {
 
     private List<Car> cars;
     private ConvertColor convertColor;
-    Car car1 = new Car(1L, "Ferrari", "599 GTB Fiorano", Color.RED);
-    Car car2 = new Car(2L, "Audi", "A6", Color.NAVY_BLUE);
-    Car car3 = new Car(3L, "Aston Martin", "DB5", Color.RED);
 
     @Autowired
     public CarService(ConvertColor convertColor) {
