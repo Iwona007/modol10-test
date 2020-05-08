@@ -63,10 +63,8 @@ public class CarApi {
         Optional<Car> car = carServiceInter.changeCar(id, modifyCar);
         if (modifyCar.equals(car)) {
             return new ResponseEntity<>(modifyCar, HttpStatus.OK);
-        } else if (!modifyCar.equals(car)) {
-            return new ResponseEntity<>(modifyCar, HttpStatus.OK);
         }
-        return new ResponseEntity<>(modifyCar, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(modifyCar, HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping("/{carId}/color/{newColor}")
@@ -77,7 +75,7 @@ public class CarApi {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PatchMapping("/{id}/mark/{newMark}")
     public ResponseEntity<Car> updateMark(@PathVariable Long id, @PathVariable @NotNull String newMark) {
         boolean changedMark = carServiceInter.changeMark(id, newMark);

@@ -58,17 +58,15 @@ public class CarService implements CarServiceInter {
 
     @Override //put
     public Optional<Car> changeCar(Long carId, Car changedCar) {
-        Optional<Car> findCar = cars.stream().filter(car -> car.getCarId() == changedCar.getCarId()).findFirst();
-        if (findCar.isPresent()) {
-            Car car = findCar.get();
+        Optional<Car> findCar = Optional.ofNullable(cars.stream().filter(car -> car.getCarId() == changedCar.getCarId()).findFirst()
+                .orElseThrow(() -> new CarNotExist(carId)));
+
+        return findCar.map(car -> {
             car.setMark(changedCar.getMark());
             car.setModel(changedCar.getModel());
             car.setColor(changedCar.getColor());
-        } else {
-            changedCar.setCarId(carId);
-            cars.add(changedCar);
-        }
-        return findCar;
+            return car;
+        });
     }
 
     @Override //    patch
