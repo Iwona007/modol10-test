@@ -1,5 +1,6 @@
 package iwona.pl.modol10test.service;
 
+import iwona.pl.modol10test.exception.CarNotExist;
 import iwona.pl.modol10test.model.Car;
 import iwona.pl.modol10test.model.Color;
 import java.util.ArrayList;
@@ -10,14 +11,14 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +47,8 @@ class CarServiceTest {
     }
 
     @Test
-    void should_get_All_cars() {
+    @DisplayName("Should get all cars test")
+    void shouldGetAllCarsTest() {
 //        given:
         List<Car> carsList = prepareMockData();
         given(carServiceInter.getAll()).willReturn(carsList);
@@ -57,19 +59,21 @@ class CarServiceTest {
     }
 
     @Test
-    void carById() {
+    @DisplayName("Should find car by id test")
+    void shouldFindCarByIdTest() {
 //        given
-        Car car = new Car(1L, "Marka1", "Model1", Color.RED);
-        given(carServiceInter.carById(1L)).willReturn(Optional.of(car));
+        Car car = new Car(2L, "Marka1", "Model1", Color.RED);
+        given(carServiceInter.carById(2L)).willReturn(Optional.of(car));
 //        when
-        Long carId = carServiceInter.carById(1L).get().getCarId();
+        Long carId = carServiceInter.carById(2L).get().getCarId();
 //        then
-        assertEquals(1L, carId);
-        assertNotEquals(2L, carId);
+        assertEquals(2L, carId);
+        assertNotEquals(1L, carId);
     }
 
     @Test
-    void carByColor() {
+    @DisplayName("Should find car by color test")
+    void shouldFindCarByColor() {
 //        given:
         given(carServiceInter.carByColor("RED")).willReturn(prepareMockData().stream()
                 .filter(car -> car.getColor().equals(Color.valueOf("RED"))).collect(Collectors.toList()));
@@ -80,7 +84,8 @@ class CarServiceTest {
     }
 
     @Test
-    void save() {
+    @DisplayName("Should save car test")
+    void shouldSaveCarTest() {
 //        given
         Car car = new Car(4L, "Audi", "C5", Color.RED);
 //        when
@@ -92,10 +97,11 @@ class CarServiceTest {
     }
 
     @Test
-    void changeCar() {
+    @DisplayName("Should change car test")
+    void shouldChangeCarTest() {
 //        given
         Car newCar = new Car(2L, "Audi", "C5", Color.SILVER);
-//when
+//        when
         Optional<Car> findCar = prepareMockData().stream().filter(car -> car.getCarId().equals(newCar.getCarId())).findFirst();
        findCar.map(car -> {
             car.setMark(newCar.getMark());

@@ -14,5 +14,4 @@ public class ConvertColor {
                 .findAny()
                 .orElseThrow(() -> new ColorNotFound(color));
     }
-
 }

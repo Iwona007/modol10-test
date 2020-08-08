@@ -32,14 +32,14 @@ public class CarService implements CarServiceInter {
         return cars;
     }
 
-    @Override  //get
+    @Override
     public Optional<Car> carById(Long carId) {
         Optional<Car> findCarById = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         findCarById.orElseThrow(() -> new CarNotExist(carId));
         return findCarById;
     }
 
-    @Override //get by color
+    @Override
     public List<Car> carByColor(String color) {
         return getAll().stream().filter(car -> color.equalsIgnoreCase(car.getColor().name()))
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class CarService implements CarServiceInter {
         });
     }
 
-    @Override //    patch
+    @Override
     public boolean changeColor(Long carId, Color color) {
         Optional<Car> first = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         if (first.isPresent()) {
@@ -85,7 +85,7 @@ public class CarService implements CarServiceInter {
         throw new CarNotExist(id);
     }
 
-    @Override //delete
+    @Override
     public boolean removeById(Long carId) {
         Optional<Car> first = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
         if (first.isPresent()) {

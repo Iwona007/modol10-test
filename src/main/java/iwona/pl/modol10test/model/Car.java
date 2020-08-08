@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class Car  {
 
     @NotNull
-    private Long carId;
+    private long carId;
     @NotBlank
     private String mark;
     @NotBlank
