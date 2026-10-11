@@ -123,15 +123,48 @@ class CarApiTest {
     }
 
     @Test
-    @DisplayName("Should not modify car with exist id test")
+    @DisplayName("Should not modify car when model is blank test")
     @DirtiesContext
-    void shouldNotModifyCarWithExistIdTest() throws Exception {
+    void shouldNotModifyCarWhenModelIsBlankTest() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.put("/api/cars/modify/{id}", 2L)
                 .content(asJsonString(new Car(2L, "Toyota", "", Color.SILVER)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+    }
+
+    @Test
+    @DisplayName("Should modify car with given id test")
+    @DirtiesContext
+    void shouldModifyCarWithGivenIdTest() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/cars/modify/{id}", 2L)
+                .content(asJsonString(new Car(2L, "Toyota", "Yaris", Color.SILVER)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.carId").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.mark").value("Toyota"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.model").value("Yaris"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value("SILVER"));
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/cars/{carId}", 2L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.mark").value("Toyota"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.model").value("Yaris"));
+    }
+
+    @Test
+    @DisplayName("Should not modify car when car with given id not exist test")
+    @DirtiesContext
+    void shouldNotModifyCarWhenCarWithGivenIdNotExistTest() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/cars/modify/{id}", 10L)
+                .content(asJsonString(new Car(10L, "Toyota", "Yaris", Color.SILVER)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("Car with given id: 10 not exist")));
     }
 
     @Test
@@ -167,27 +200,27 @@ class CarApiTest {
     void shouldUpdateCarMarkWithGivenIdTest() throws Exception {
         Car car = new Car(1L, "BMW", "S5", Color.RED);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", car.getCarId(), "BMW")
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{id}/mark/{newMark}", car.getCarId(), "BMW")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("Should not update car's mark with given id tes")
+    @DisplayName("Should not update car's mark with given id test")
     @DirtiesContext
     void shouldNotUpdateCarMarkWithGivenIdTest() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 10L, "BMW")
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{id}/mark/{newMark}", 10L, "BMW")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("Should update car's mark when mark parameter is empty test")
+    @DisplayName("Should return not found when mark parameter is empty test")
         @DirtiesContext
-    void shouldNotUpdateMarkWhenMarkParameterIsEmptyTest() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars//{id}/mark/{newMark}", 1L, "")
+    void shouldNotFindEndpointWhenMarkParameterIsEmptyTest() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch("/api/cars/{id}/mark/{newMark}", 1L, "")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -197,8 +230,6 @@ class CarApiTest {
     @DisplayName("Should delete car by given id test")
     @DirtiesContext
     void shouldDeleteCarByGivenIdTest() throws Exception {
-//        Car car = new Car(1L, "Ferrari", "599 GTB Fiorano", Color.RED);
-//        Car car2 = carApi.getAll().stream().filter(car1 -> car1.getCarId() == 3L).findFirst().get();
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/cars/{id}", 3L))
                 .andExpect(status().isAccepted());
     }

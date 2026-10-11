@@ -2,13 +2,13 @@ package iwona.pl.modol10test.controller;
 
 
 import iwona.pl.modol10test.converColor.ConvertColor;
+import iwona.pl.modol10test.exception.CarNotExist;
 import iwona.pl.modol10test.model.Car;
 import iwona.pl.modol10test.service.CarServiceInter;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/cars")
 public class CarApi {
 
-    private CarServiceInter carServiceInter;
-    private ConvertColor convertColor;
+    private final CarServiceInter carServiceInter;
+    private final ConvertColor convertColor;
 
-    @Autowired
     public CarApi(CarServiceInter carServiceInter, ConvertColor convertColor) {
         this.carServiceInter = carServiceInter;
         this.convertColor = convertColor;
@@ -35,7 +34,6 @@ public class CarApi {
     public ResponseEntity<Car> getById(@PathVariable @NotNull Long carId) {   //
         Optional<Car> findCar = carServiceInter.carById(carId);
         if (findCar.isPresent()) {
-            findCar.get();
             return new ResponseEntity<>(findCar.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -60,11 +58,9 @@ public class CarApi {
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<Car> modifyCar(@PathVariable Long id, @Valid @RequestBody Car modifyCar) {
-        Optional<Car> car = carServiceInter.changeCar(id, modifyCar);
-        if (modifyCar.equals(car)) {
-            return new ResponseEntity<>(modifyCar, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(modifyCar, HttpStatus.NOT_FOUND);
+        Car car = carServiceInter.changeCar(id, modifyCar)
+                .orElseThrow(() -> new CarNotExist(id));
+        return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
     @PatchMapping("/{carId}/color/{newColor}")

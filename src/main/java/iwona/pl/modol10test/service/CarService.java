@@ -1,7 +1,6 @@
 package iwona.pl.modol10test.service;
 
 
-import iwona.pl.modol10test.converColor.ConvertColor;
 import iwona.pl.modol10test.exception.CarNotExist;
 import iwona.pl.modol10test.model.Car;
 import iwona.pl.modol10test.model.Color;
@@ -9,18 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CarService implements CarServiceInter {
 
-    private List<Car> cars;
-    private ConvertColor convertColor;
+    private final List<Car> cars;
 
-    @Autowired
-    public CarService(ConvertColor convertColor) {
-        this.convertColor = convertColor;
+    public CarService() {
         this.cars = new ArrayList<>();
         cars.add(new Car(1L, "Ferrari", "599 GTB Fiorano", Color.RED));
         cars.add(new Car(2L, "Audi", "A6", Color.NAVY_BLUE));
@@ -34,9 +29,11 @@ public class CarService implements CarServiceInter {
 
     @Override
     public Optional<Car> carById(Long carId) {
-        Optional<Car> findCarById = cars.stream().filter(car -> car.getCarId().equals(carId)).findFirst();
-        findCarById.orElseThrow(() -> new CarNotExist(carId));
-        return findCarById;
+        Car findCarById = cars.stream()
+                .filter(car -> car.getCarId().equals(carId))
+                .findFirst()
+                .orElseThrow(() -> new CarNotExist(carId));
+        return Optional.of(findCarById);
     }
 
     @Override
@@ -52,15 +49,14 @@ public class CarService implements CarServiceInter {
 
     @Override //put
     public Optional<Car> changeCar(Long carId, Car changedCar) {
-        Optional<Car> findCar = Optional.ofNullable(cars.stream().filter(car -> car.getCarId().equals(changedCar.getCarId())).findFirst()
-                .orElseThrow(() -> new CarNotExist(carId)));
-
-        return findCar.map(car -> {
-            car.setMark(changedCar.getMark());
-            car.setModel(changedCar.getModel());
-            car.setColor(changedCar.getColor());
-            return car;
-        });
+        Car car = cars.stream()
+                .filter(c -> c.getCarId().equals(carId))
+                .findFirst()
+                .orElseThrow(() -> new CarNotExist(carId));
+        car.setMark(changedCar.getMark());
+        car.setModel(changedCar.getModel());
+        car.setColor(changedCar.getColor());
+        return Optional.of(car);
     }
 
     @Override
